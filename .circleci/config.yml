@@ -1,0 +1,28 @@
+version: 2.1
+
+executors:
+  python-executor:
+    docker:
+      - image: cimg/python:3.11
+
+jobs:
+  test:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r app/requirements.txt
+      - run:
+          name: Run API tests
+          command: |
+            . venv/bin/activate
+            pytest tests/
+
+workflows:
+  test-and-build:
+    jobs:
+      - test

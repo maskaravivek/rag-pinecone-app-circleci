@@ -1,0 +1,7 @@
+openai
+pinecone-client
+langchain
+tiktoken
+python-dotenv
+flask
+pytest

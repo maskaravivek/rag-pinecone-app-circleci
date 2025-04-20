@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.p~ 
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.log
+
+# Virtual environments
+venv/
+.env/
+
+# VSCode
+.vscode/
+
+# Pytest
+.cache/
+*.cover
+coverage.xml
+htmlcov/
+
+# CircleCI
+.circleci/cache/
+
+# MacOS
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Jupyter (if used for prototyping)
+.ipynb_checkpoints/
+
+# Misc
+*.sqlite3
