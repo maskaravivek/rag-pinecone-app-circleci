@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  heroku: circleci/heroku@1.2.6
+  heroku: circleci/heroku@2.0
 
 executors:
   python-executor:
@@ -32,4 +32,4 @@ workflows:
           filters:
             branches:
               only: main
-          app-name: << pipeline.parameters.HEROKU_APP_NAME >>
+          app-name: "${HEROKU_APP_NAME}"
