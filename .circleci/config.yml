@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  heroku: circleci/heroku@1.2.6
+
 executors:
   python-executor:
     docker:
@@ -16,10 +19,17 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            pip install -r requirements.txt
+            pip install -r app/requirements.txt
             pytest tests/
 
 workflows:
-  test-and-build:
+  test-and-deploy:
     jobs:
       - test
+      - heroku/deploy-via-git:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
+          app-name: << pipeline.parameters.HEROKU_APP_NAME >>
