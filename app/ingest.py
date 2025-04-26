@@ -1,19 +1,61 @@
-# app/ingest.py
 import os
 from dotenv import load_dotenv
-from langchain.vectorstores import Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.document_loaders import TextLoader
-import pinecone
+from langchain_pinecone import PineconeVectorStore
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.document_loaders import TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from typing import Optional
 
-load_dotenv()
+def ingest_document(file_path: str) -> dict:
+    """
+    Ingest a document into Pinecone vector store.
+    
+    Args:
+        file_path (str): Path to the document to be ingested
+    
+    Returns:
+        dict: Status of the ingestion
+    """
+    try:
+        # Load environment variables
+        load_dotenv()
+        
+        # Fetch from .env
+        index_name = os.getenv("PINECONE_INDEX_NAME")
+        if not index_name:
+            raise ValueError("PINECONE_INDEX_NAME must be set in your .env file.")
+        
+        # Create embeddings
+        embedding = OpenAIEmbeddings()
 
-pinecone.init(api_key=os.getenv("PINECONE_API_KEY"), environment=os.getenv("PINECONE_ENV"))
-
-loader = TextLoader("sample_docs.txt")
-docs = loader.load()
-
-embedding = OpenAIEmbeddings()
-
-index_name = os.getenv("PINECONE_INDEX_NAME")
-Pinecone.from_documents(docs, embedding, index_name=index_name)
+        # Load the document
+        loader = TextLoader(file_path)
+        documents = loader.load()
+        
+        # (Recommended) Split the documents
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=100
+        )
+        docs = text_splitter.split_documents(documents)
+        
+        # Ingest into Pinecone using new PineconeVectorStore
+        PineconeVectorStore.from_documents(
+            docs,
+            index_name=index_name,
+            embedding=embedding,
+            namespace="default"  # optional, you can add a namespace if you want
+        )
+        
+        return {
+            "status": "success",
+            "message": f"Document '{file_path}' successfully ingested into index '{index_name}'",
+            "index_name": index_name
+        }
+        
+    except Exception as e:
+        print(f"Error during ingestion: {str(e)}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }

@@ -11,15 +11,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install dependencies and run tests
           command: |
             python -m venv venv
             . venv/bin/activate
+            pip install --upgrade pip
             pip install -r app/requirements.txt
-      - run:
-          name: Run API tests
-          command: |
-            . venv/bin/activate
             pytest tests/
 
 workflows:

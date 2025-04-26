@@ -1,7 +1,10 @@
 openai
-pinecone-client
+pinecone
 langchain
 tiktoken
 python-dotenv
 flask
 pytest
+werkzeug
+langchain_openai
+langchain_pinecone
