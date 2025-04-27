@@ -9,3 +9,4 @@ werkzeug
 langchain_openai
 langchain_pinecone
 langchain_community
+gunicorn
