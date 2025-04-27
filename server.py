@@ -25,7 +25,6 @@ def query_rag():
 @app.route('/ingest', methods=['POST'])
 def ingest_file():
     try:
-        # Check if file is present in request
         if 'file' not in request.files:
             return jsonify({"error": "No file provided"}), 400
         
@@ -33,14 +32,10 @@ def ingest_file():
         if file.filename == '':
             return jsonify({"error": "No file selected"}), 400
 
-        # Save file temporarily
         temp_file_path = f"temp_{werkzeug.utils.secure_filename(file.filename)}"
         file.save(temp_file_path)
         
-        # Ingest the document
         result = ingest_document(temp_file_path)
-        
-        # Clean up temporary file
         os.remove(temp_file_path)
         
         return jsonify(result)

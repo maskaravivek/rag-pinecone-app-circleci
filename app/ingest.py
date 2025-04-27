@@ -17,34 +17,26 @@ def ingest_document(file_path: str) -> dict:
         dict: Status of the ingestion
     """
     try:
-        # Load environment variables
         load_dotenv()
-        
-        # Fetch from .env
         index_name = os.getenv("PINECONE_INDEX_NAME")
         if not index_name:
             raise ValueError("PINECONE_INDEX_NAME must be set in your .env file.")
         
-        # Create embeddings
         embedding = OpenAIEmbeddings()
-
-        # Load the document
         loader = TextLoader(file_path)
         documents = loader.load()
         
-        # (Recommended) Split the documents
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=100
         )
         docs = text_splitter.split_documents(documents)
         
-        # Ingest into Pinecone using new PineconeVectorStore
         PineconeVectorStore.from_documents(
             docs,
             index_name=index_name,
             embedding=embedding,
-            namespace="default"  # optional, you can add a namespace if you want
+            namespace="default"
         )
         
         return {

@@ -2,10 +2,9 @@
 import os
 from dotenv import load_dotenv
 from langchain_pinecone import PineconeVectorStore
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI  # ✅ FIXED here
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains import RetrievalQA
 
-# Load environment variables
 load_dotenv()
 
 def ask(question: str) -> str:
@@ -26,6 +25,5 @@ def ask(question: str) -> str:
         retriever=docsearch.as_retriever()
     )
     
-    # 🔥 Updated to use `.invoke()` instead of `.run()`
     result = qa.invoke({"query": question})
-    return result["result"]  # because RetrievalQA returns a dict now
+    return result["result"]

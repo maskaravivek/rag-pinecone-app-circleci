@@ -14,7 +14,6 @@ from app.query import ask
 @patch("app.query.ChatOpenAI")
 @patch("app.query.RetrievalQA")
 def test_ask_success(mock_retrieval_qa, mock_chat_openai, mock_embeddings, mock_vectorstore, mock_load_dotenv):
-    # Arrange
     mock_load_dotenv.return_value = None
 
     mock_docsearch = MagicMock()
@@ -27,15 +26,11 @@ def test_ask_success(mock_retrieval_qa, mock_chat_openai, mock_embeddings, mock_
     mock_qa_chain.invoke.return_value = {"result": "mocked answer"}
     mock_retrieval_qa.from_chain_type.return_value = mock_qa_chain
 
-    # Set required env variable
     with patch.dict("os.environ", {"PINECONE_INDEX_NAME": "mock-index"}):
-        # Act
         response = ask("What is RAG?")
     
-    # Assert
     assert response == "mocked answer"
 
-    # Verify calls
     mock_vectorstore.from_existing_index.assert_called_once_with(
         index_name="mock-index",
         embedding=mock_embeddings.return_value,
@@ -51,12 +46,10 @@ def test_ask_success(mock_retrieval_qa, mock_chat_openai, mock_embeddings, mock_
 @patch("app.query.load_dotenv")
 @patch("app.query.OpenAIEmbeddings")
 def test_ask_missing_env(mock_embeddings, mock_load_dotenv):
-    # Arrange
     mock_load_dotenv.return_value = None
-    mock_embeddings.return_value = None  # prevents trying to access real OpenAI API key
+    mock_embeddings.return_value = None
 
     with patch.dict("os.environ", {}, clear=True):
-        # Act & Assert
         with pytest.raises(ValueError) as excinfo:
             ask("Test question")
 
