@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.document_loaders import TextLoader
@@ -17,7 +16,6 @@ def ingest_document(file_path: str) -> dict:
         dict: Status of the ingestion
     """
     try:
-        load_dotenv()
         index_name = os.getenv("PINECONE_INDEX_NAME")
         if not index_name:
             raise ValueError("PINECONE_INDEX_NAME must be set in your .env file.")

@@ -1,11 +1,8 @@
 # app/query.py
 import os
-from dotenv import load_dotenv
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains import RetrievalQA
-
-load_dotenv()
 
 def ask(question: str) -> str:
     embedding = OpenAIEmbeddings()

@@ -1,12 +1,10 @@
 # api/server.py
 import os
 from flask import Flask, request, jsonify
-from dotenv import load_dotenv
 from app.query import ask
 from app.ingest import ingest_document
 import werkzeug
 
-load_dotenv()
 app = Flask(__name__)
 
 @app.route('/ask', methods=['POST'])
@@ -44,4 +42,4 @@ def ingest_file():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
