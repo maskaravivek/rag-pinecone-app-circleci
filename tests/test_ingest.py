@@ -8,11 +8,13 @@ import pytest
 from unittest.mock import patch, MagicMock
 from app.ingest import ingest_document
 
+@patch("app.ingest.load_dotenv")
 @patch("app.ingest.PineconeVectorStore")
 @patch("app.ingest.OpenAIEmbeddings")
 @patch("app.ingest.TextLoader")
 @patch("app.ingest.RecursiveCharacterTextSplitter")
-def test_ingest_document_success(mock_text_splitter, mock_text_loader, mock_embeddings, mock_vectorstore):
+def test_ingest_document_success(mock_text_splitter, mock_text_loader, mock_embeddings, mock_vectorstore, mock_load_dotenv):
+    mock_load_dotenv.return_value = None
     mock_loader_instance = MagicMock()
     mock_loader_instance.load.return_value = ["mock_document"]
     mock_text_loader.return_value = mock_loader_instance
@@ -43,7 +45,9 @@ def test_ingest_document_success(mock_text_splitter, mock_text_loader, mock_embe
         namespace="default"
     )
 
-def test_ingest_document_missing_env():
+@patch("app.ingest.load_dotenv")
+def test_ingest_document_missing_env(mock_load_dotenv):
+    mock_load_dotenv.return_value = None
     with patch.dict("os.environ", {}, clear=True):
         result = ingest_document("mock_file.txt")
     
